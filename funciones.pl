@@ -83,11 +83,8 @@ replaceXY(Tablero,X,Y,E,NTablero):-
 	getFirst(NX,Tablero,L),
 	eraseFirstN(NX,Tablero,NT),
 	selectchk(Z,NT,RL),
-
 	replaceX(Z,Y,E,R),
-
 	append(L,[R],LL),
-
 	appendR1(LL,RL,NTablero).
 
 
@@ -172,8 +169,6 @@ maxList(L,R):-
 	maxList(RL,NLW,0,1,Z,R).
 
 
-
-
 %%%
 %crea una lista de de -1 de tamaño LI
 makeList(0,R,R).
@@ -195,7 +190,6 @@ getColorPos(_,_,1,R,R).
 getColorPos(L,X,_,Y,R):-
 	NY is Y + 1,
 	selectchk(Z:_,L,RL),
-
 	equals(X,Z,RE),
 	binaryNot(RE,RBN),
 	getColorPos(RL,X,RBN,NY,R).
@@ -208,7 +202,6 @@ canPutElementInPattern1(_,_,_,0,R):-R is 0.
 canPutElementInPattern1(Tablero,X,E,_,R):-
 	nth0(X,Tablero,P),
 	getColorPos(P,E,CP),
-
 	NCP is CP - 1,
 	busyCell(Tablero,X,NCP,BCR),binaryNot(BCR,R).
 
@@ -220,7 +213,6 @@ canPutElementInPattern1(Tablero,X,E,_,R):-
 canPutElementInPattern(Tablero,L,X,E,R):-
 	nth0(X,L,P),
 	canPutElement(P,E,RP),
-
 	getFreeSpaces(P,RFS),
 	(   RFS > 0 -> canPutElementInPattern1(Tablero,X,E,RP,R) ; R is 0).
 
@@ -265,7 +257,6 @@ consecutiveColumn(Tablero,I,J,R):-
 completeLines(_,0,R,R).
 completeLines(Tablero,W,RR,R):-
 	NW is W - 1,
-	%consecutiveLine(Tablero,NW,0,RCL),
 	nth0(NW,Tablero,L),
 	findall(X,(member(X,L),busyF(X)),B),
 	length(B,RCL),
@@ -282,8 +273,6 @@ completeLines(Tablero,R):-
 completeColumns(_,0,R,R).
 completeColumns(Tablero,W,RR,R):-
 	NW is W - 1,
-	%consecutiveColumn(Tablero,NW,0,RCC),
-	%nth0(NW,Tablero,L),
 	getColumn(Tablero,NW,L),
 	findall(X,(member(X,L),busyF(X)),B),
 	length(B,RCC),
@@ -298,7 +287,6 @@ completeColumns(Tablero,R):-
 	completeColumns(Tablero,W,0,R).
 
 
-
 %metodos para decir la cantidad de colores completos en un tablero
 completeColors(L,R):-
 	t1(L,1,A),
@@ -311,9 +299,6 @@ completeColors(L,R):-
 t1(L,Q,R):-
 	findall(Y,(member(X,L) , member(Y,X) , equalF(Y,Q) , busyF(Y) ),W),
 	length(W,LW),equals(LW,5,RE),binaryNot(RE,R).
-
-
-
 
 
 
@@ -354,11 +339,8 @@ toSum(Tablero,I,Z,R):-
 	getColorPos(L,Z,J),
 	NJ is J - 1,
 	consecutiveLine(Tablero,I,NJ,RCL),
-
 	consecutiveColumn(Tablero,NJ,I,RCC),
-
 	toSum1(RCL,RCC,R).
-	%R is RCL + RCC .
 
 
 sumPointsOfMove(_,_,0,R,R).
@@ -367,10 +349,8 @@ sumPointsOfMove(Tablero,L,W,RR,R):-
 	I is 5 - W,
 	selectchk(Z,L,RL),
 	toSum(Tablero,I,Z,RS),
-
 	toUpdate(Tablero,I,Z,NTablero),
 	NRR is RR + RS ,
-
 	sumPointsOfMove(NTablero,RL,NW,NRR,R).
 
 
@@ -394,39 +374,14 @@ getNegativeSum(_,R):- R is -14.
 %suma los puntos al finalizar una ronda
 
 sumPoints(Tablero,PL,NL,R):-
-	%printT(Tablero),
-	%writeln('tablero inicial'),
-	%read(_),
 	getFullLines(PL,FL),
-
-
-        %printT(FL),
-	%writeln('lineas completas en el PatterLine'),
-
-
 	completeLines(Tablero,CL),
-	%print([CL]),
-	%writeln('lineas completas en el tablero inicial'),
-	%read(_),
 	completeColumns(Tablero,CC),
-	%print([CC]),
-	%writeln('columnas completas en el tablero inicial'),
-	%read(_),
 	completeColors(Tablero,CCl),
-	%print([CCl]),
-	%writeln('colores completos en el tablero inicial'),
-	%read(_),
 	sumPointsOfMove(Tablero,FL,RS),
-	%print([RS]),
-	%writeln('suma de los puntos de un movimiento'),
-	%read(_),
 	updateBoard(Tablero,FL,NTablero),
-	%printT(NTablero),
-	%writeln('nuevo Tablero'),
-	%read(_),
 	completeLines(NTablero,CL1),
 	completeColumns(NTablero,CC1),
-
 	completeColors(Tablero,CCl1),
 	NCL is CL1 - CL,
 	NCC is CC1 - CC,
@@ -434,25 +389,17 @@ sumPoints(Tablero,PL,NL,R):-
 	length(NL,LNL),
 	getNegativeSum(LNL,SNL),
 
-       write(RS) , writeln('puntos del movimiento'),
-       %print(NL),writeln(''),
-       write(SNL) , writeln('puntos negativos del movimiento'),
+    write(RS) , writeln('puntos del movimiento'),
+    write(SNL) , writeln('puntos negativos del movimiento'),
+    write(NCL) , writeln('cantidad de filas nuevas'),
+    write(NCC) , writeln('cantidad de columnas nuevas'),
+    write(NCCl) , writeln('cantidad de colores nuevos'),
 
-
-       write(NCL) , writeln('cantidad de filas nuevas'),
-
-
-       write(NCC) , writeln('cantidad de columnas nuevas'),
-
-
-       write(NCCl) , writeln('cantidad de colores nuevos'),
-
-       R1 is NCL * 2,
-       R2 is NCC * 7,
-       R3 is NCCl * 10,
-       R4 is RS + SNL + R1 + R2 + R3,
-       R is max(R4,0),
-	%R is max(RS + (NCL * 2) + (NCC * 7) + SNL  + (NCCl * 10) , 0 ),
+    R1 is NCL * 2,
+    R2 is NCC * 7,
+    R3 is NCCl * 10,
+    R4 is RS + SNL + R1 + R2 + R3,
+    R is max(R4,0),
 	write(R),writeln(' nueva suma').
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %funciones para generar movimientos aviables en un tablero para un jugador
@@ -466,9 +413,8 @@ colorAndRest(L,C,W,I,S,RR,R):-
 	    findall(X ,(member(X,L),not(isColorF(C,X)) , not(isM1f(X)) ),RT),
 
 	    append(RR,[[S,W,I,C:LT,RT]],R)
-
-	; R = RR
-
+	; 
+	R = RR
 	).
 
 %dada un factoria o el ground genera una lista de elementos
@@ -514,20 +460,14 @@ getAviableLinesForAElement(_,_,_,0,R,R).
 getAviableLinesForAElement(B,E,PTL,W,RR,R):-
 	        NW is W - 1,
 		I is 5 - W,
-		%nht0(I,PTL,L)
-		%aqui va la parte de verificar
-
 		nth0(3,E,C:_),
-
 		%poner un elemento en la columna x del patternLine
 		%base 0
 		canPutElementInPattern(B,PTL,I, C ,CPER),
 		(   CPER > 0  ->  H = [E , I] ,
 		    append(RR,[H],NRR),
 		    getAviableLinesForAElement(B,E,PTL,NW,NRR,R);
-		    getAviableLinesForAElement(B,E,PTL,NW,RR,R) )
-
-		.
+		    getAviableLinesForAElement(B,E,PTL,NW,RR,R) ).
 
 
 getAviableLines(_,_,0,_,R,R).
@@ -555,9 +495,7 @@ updatePatterLine(PL,W,RR,R):-
 	I is 5 - W,
 	nth0(I,PL,L),
 	length(L,LI),
-	%print(L),
 	findall(X,(member(X,L),isM1f(X)),RW),
-	%print(RW),
 	length(RW,LW),
 	equals(LW,0,RE),
 	binaryNot(RE,RBN),
@@ -612,7 +550,6 @@ updateBoard(Tablero,W,L,NTablero):-
 	I is 5 - W,
 	selectchk(Z,L,RL),
 	toUpdate(Tablero,I,Z,RTablero),
-	%getColorPos(,Z,J)
 	NW is W - 1,
 	updateBoard(RTablero,NW,RL,NTablero).
 
@@ -645,85 +582,24 @@ updatePlayer(P,R):-
 	nth0(2,P,NL),
 	nth0(3,P,PO),
 	nth0(4,P,PNU),
-
-
-
-	%printT(B),
-	%writeln('ggg'),
-	%read(_),
-	%printT(PL),
-	%writeln('dd'),
-	%read(_),
-	%printT(NL),
-	%writeln('iii'),
-	%read(_),
-	%printT([PO]),
-	%writeln('aaa'),
-	%read(_),
-
-
-
-
 	sumPoints(B,PL,NL,SP),
-	%write(SP),
-	%writeln('lo devuelto por el metodo '),
-	%read(_),
 	NPO is PO + SP ,
-
-
-	%printT([NPO]),
-
-	%writeln('Nueva puntuacion'),
-	%read(_),
-
-
 	updatePatternLine(PL,UPL),
-
 	nth0(0,UPL,NPL),
 	nth0(1,UPL,NR),
-
-	%printT(NPL),
-	%writeln('ffffggg'),
-
-
-	%printT(NR),
-	%writeln('hhhhggg'),
-
-
 	getFullLines(PL,FL),
 	updateBoard(B,FL,NB),
-
-	R = [ [NB , NPL , [] , NPO , PNU ] , NR ]%,
-	 %print(R),	writeln('UPDATETTETETETETET')%, read(_)
+	R = [ [NB , NPL , [] , NPO , PNU ] , NR ]
 	.
 
 
 
 
-updatePlayers(_,0,RR,GR,R):- R = [RR , GR] .%, print(R),	writeln('players actualizados answer').%, read(_).
+updatePlayers(_,0,RR,GR,R):- R = [RR , GR] .
 updatePlayers(LP,W,RR,GR,R):-
-
-
-
-	%writeln('actualizado'),
-	%writeln('lista de Players'),
-	%print(LP),
-	%read(_),
-	%writeln('longitud lista de Players'),
-	%write(W),
-	%read(_),
-	%writeln('lista de Nuevos Players'),
-	%print(RR),
-	%read(_),
-	%writeln('lista suelos que van dejando los Players'),
-	%print(GR),
-	%read(_),
-
-
 	NW is W - 1,
 	selectchk(Z , LP,RLP),
 	updatePlayer(Z,NZ),
-	 %print(NZ),	writeln('players actualizado'),% read(_),
 	nth0(0,NZ,NP),
 	nth0(1,NZ,NR),
 	append(GR,NR,NGR),
@@ -765,14 +641,10 @@ isEmpty(X):- -1 is X.
 myUpDown(X,P,R):-
 	nth0(0,X,M),
 	nth0(1,X,I),
-
-
-
-        nth0(3,M,C:_),
-        nth0(0,P,B),
-        nth0(I,B,L),
-        getColorPos(L,C,CP),
-
+    nth0(3,M,C:_),
+    nth0(0,P,B),
+    nth0(I,B,L),
+    getColorPos(L,C,CP),
 	(   CP > I -> R is 1 ; R is 0).
 
 
@@ -813,24 +685,12 @@ makeMove1(P,F,G,R):-
 	    nth0(1,P,PTL),
 	    nth0(0,P,PB),
 	    getAviableLines(PB,PTL,CL2,AM),
-	    %writeln('Movimientos Aviables'),
-
-
 	    getTwoList(AM,P,TLR),
-
-
-	    %print(AM),
-
-
-
 	    nth0(0,TLR,UPAM),
 	    nth0(1,TLR,DWAM),
-
-
-
 	    length(UPAM,LUPAM),
-	    length(DWAM,LDWAM),
-
+		length(DWAM,LDWAM),
+		
 	    (	LUPAM > 0 ->
 	        randomList(UPAM,RUPAM),
 		nth0(0,RUPAM , CM),
@@ -896,13 +756,7 @@ makeMove1(P,F,G,R):-
 	       ))
 
 	    ;
-	     %  print(G),
-	    %writeln('Last Ground'),
-
-	    %print(F),
-	    %writeln('Last Factories'),
-
-	    %read(_),
+	    
 	    R = [ P , F ,  G ]
 	)
 
@@ -940,20 +794,11 @@ makeMove2(P,F,G,R):-
 	    nth0(1,P,PTL),
 	    nth0(0,P,PB),
 	    getAviableLines(PB,PTL,CL2,AM),
-	    %writeln('Movimientos Aviables'),
-
-
+	    
 	    getTwoList1(AM,TLR),
-
-
-	    %print(AM),
-
-
 
 	    nth0(0,TLR,UPAM),
 	    nth0(1,TLR,DWAM),
-
-
 
 	    length(UPAM,LUPAM),
 	    length(DWAM,LDWAM),
@@ -1023,13 +868,7 @@ makeMove2(P,F,G,R):-
 	       ))
 
 	    ;
-	       %print(G),
-	    %writeln('Last Ground'),
-
-	    %print(F),
-	    %writeln('Last Factories'),
-
-	    %read(_),
+	      
 	    R = [ P , F ,  G ]
 	)
 
@@ -1174,13 +1013,7 @@ makeMove(P,F,G,R):-
 	    nth0(1,P,PTL),
 	    nth0(0,P,PB),
 	    getAviableLines(PB,PTL,CL2,AM),
-	    %writeln('Movimientos Aviables'),
 	    randomList(AM,RAM),
-	    %print(RAM),
-	    %writeln(''),
-	    %print(CL2),
-	    %writeln(''),
-	    % read(_),
 
 	    length(RAM,LRAM),
 	    (	LRAM > 0 ->
@@ -1196,7 +1029,7 @@ makeMove(P,F,G,R):-
 		append(G , MorRL ,NG)
 	    ),
 
-	    R = [ NP , NF , NG ]%,
+	    R = [ NP , NF , NG ]
 
 	    ;
 	     selectchk(FCL2,CL2,_),
@@ -1229,15 +1062,7 @@ makeMove(P,F,G,R):-
 
 
 	;
-	   % print("No hay Lozas"),
-
-	    %print(G),
-	    %writeln('Last Ground'),
-
-	    %print(F),
-	    %writeln('Last Factories'),
-
-	    %read(_),
+	   
 	    R = [ P , F ,  G ]
 	)
 
@@ -1321,24 +1146,11 @@ move(P,CM,R):-
 
 	),
 
-
-	%putElementsInPatternLine(L,TNL,C,NLP),
 	updateLineInPatterLine(PL,IND,NPL,NPL1),
 	R = [ [B , NPL1 , NNL1 , PO , PNU] , FG , I , RL ]
 	.
 
 makeMoves(_,_,0,F,G,RML,R):-
-
-	%print(G),
-	%writeln('Current Ground'),
-
-	%print(F),
-	%writeln('Current Factories'),
-
-	%print(RML),
-	%writeln('Current Players'),
-
-
 	R = [RML , F , G ].
 
 makeMoves(LP,LLP,W,F,G,RML,R):-
@@ -1400,11 +1212,7 @@ makeRound(LP,F,G,ML):-
 	aviableFactories(F,LF),
 	lengthOfGround(G,LG),
 
-
-
 	S is LG + LF ,
-
-
 
 	(  S > 0 -> makeMoves(LP,F,G,RML),
    		nth0(0,RML,LP1),
@@ -1498,27 +1306,18 @@ play(LP,B,LF,G,NB,R):-
 
 	makeRound(LP,F,G,MR),
 
-	%print(MR),
 	writeln('Hice una Ronda'),
-	%read(_),
 
 
 	nth0(0,MR,LP1),
 
-	%print(LP1),
-	%writeln('lo que devolvio la ronda'),
-	%read(_),
-
 	whoFirst(LP1,NLP1),
 
-	%read(_),
 
 	getElementsOfPlayers(LP1,2,Grounds),
 
 	print(Grounds),
 	writeln('los suelos de la ronda anterior'),
-	%read(_),
-
 
 	updatePlayers(NLP1,UP),
 	nth0(0,UP,LP2),
@@ -1532,12 +1331,6 @@ play(LP,B,LF,G,NB,R):-
 	nth0(1,UP,MoreGrounds),
 
 	append(Grounds,[MoreGrounds],NGrounds),
-
-	%writeln('suelos actualiazos'),
-	%print(NGrounds),
-	%writeln(''),
-
-
 	updateNBug(NB,NGrounds,NB1),
 
 	writeln('nueva tapa de la caja'),
@@ -1548,13 +1341,7 @@ play(LP,B,LF,G,NB,R):-
 	print(RB),
 	writeln(''),
 
-	%writeln('Obteniendo Tableros'),
-
 	getElementsOfPlayers(LP2,0,Boards),
-
-	%	print(Boards),
-
-	%writeln('tableros de los jugadores tras la ronda'),
 
 
 	isEnd(Boards,End),
@@ -1576,8 +1363,6 @@ play(LP,B,LF,G,NB,R):-
 
 
 	   writeln('no se ha acabado el juego aun'),
-	   %read(_),
-
 	   play(LP2,RB,LF,[-1],NB1,R)
 
 	   	   )
